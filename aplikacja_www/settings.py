@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,8 +81,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'www',
-        'USER': 'simplifee_dev',
-        'PASSWORD': 'simplifee_dev',
+        'USER': 'dm',
+        'PASSWORD': 'admin',
         'HOST': '172.17.0.1',
         'PORT': '5432',
     },
@@ -120,6 +122,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 STATIC_URL = 'static/'
 
