@@ -50,3 +50,8 @@ class Person(models.Model):
 
     class Meta:
         ordering = ['last_name']
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=2)
+    country = models.ForeignKey(Person, blank=True, null=True, on_delete=models.SET_NULL)

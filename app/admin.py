@@ -9,5 +9,9 @@ class PersonAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'month_of_birth', 'published_date']
 
 
+class TeamAdmin(admin.ModelAdmin):
+    list_display = ['name', 'country']
+
+
 admin.site.register(Student)
 admin.site.register(Person, PersonAdmin)
