@@ -19,3 +19,24 @@ class Student(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class Person(models.Model):
+    MONTHS_CHOICES = (
+        ('1', 'January'),
+        ('2', 'February'),
+        ('3', 'March'),
+        ('4', 'April'),
+        ('5', 'May'),
+        ('6', 'June'),
+        ('7', 'July'),
+        ('8', 'August'),
+        ('9', 'September'),
+        ('10', 'October'),
+        ('11', 'November'),
+        ('12', 'December'),
+    )
+
+    first_name = models.CharField(max_length=60)
+    last_name = models.CharField(max_length=60)
+    month_of_birth = models.CharField(max_length=2, choices=MONTHS_CHOICES)
