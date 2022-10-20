@@ -22,6 +22,11 @@ class Student(models.Model):
         return self.email
 
 
+class Team(models.Model):
+    name = models.CharField(max_length=100)
+    country = models.CharField(max_length=2)
+
+
 class Person(models.Model):
 
     class Month(models.IntegerChoices):
@@ -44,6 +49,7 @@ class Person(models.Model):
     published_date = models.DateTimeField(
         'date published',
         auto_now_add=True)
+    team = models.ForeignKey(Team, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
@@ -51,7 +57,3 @@ class Person(models.Model):
     class Meta:
         ordering = ['last_name']
 
-
-class Team(models.Model):
-    name = models.CharField(max_length=2)
-    country = models.ForeignKey(Person, blank=True, null=True, on_delete=models.SET_NULL)
