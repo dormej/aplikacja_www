@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.utils import timezone
 
 
 class Student(models.Model):
@@ -22,21 +23,30 @@ class Student(models.Model):
 
 
 class Person(models.Model):
-    MONTHS_CHOICES = (
-        ('1', 'January'),
-        ('2', 'February'),
-        ('3', 'March'),
-        ('4', 'April'),
-        ('5', 'May'),
-        ('6', 'June'),
-        ('7', 'July'),
-        ('8', 'August'),
-        ('9', 'September'),
-        ('10', 'October'),
-        ('11', 'November'),
-        ('12', 'December'),
-    )
+
+    class Month(models.IntegerChoices):
+        January = 1
+        February = 2
+        March = 3
+        April = 4
+        May = 5
+        June = 6
+        July = 7
+        August = 8
+        September = 9
+        October = 10
+        November = 11
+        December = 12
 
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)
-    month_of_birth = models.CharField(max_length=2, choices=MONTHS_CHOICES)
+    month_of_birth = models.IntegerField(choices=Month.choices, default='1')
+    published_date = models.DateTimeField(
+        'date published',
+        auto_now_add=True)
+
+    def __str__(self):
+        return '{0} {1}'.format(self.first_name, self.last_name)
+
+    class Meta:
+        ordering = ['last_name']
