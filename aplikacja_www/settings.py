@@ -135,6 +135,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 try:
-    from project.settings_local import *  # noqa: F401, F403
+    from aplikacja_www.settings_local import *  # noqa: F401, F403
 except ImportError:
     pass

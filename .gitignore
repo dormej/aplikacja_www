@@ -2,3 +2,4 @@ __pycache__/
 .idea/
 
 /aplikacja_www/settings_local.py
+/.idea/
