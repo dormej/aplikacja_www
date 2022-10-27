@@ -26,6 +26,9 @@ class Team(models.Model):
     name = models.CharField(max_length=100)
     country = models.CharField(max_length=2)
 
+    def __str__(self):
+        return '{0} {1}'.format(self.name, self.country)
+
 
 class Person(models.Model):
 
@@ -55,5 +58,7 @@ class Person(models.Model):
         return '{0} {1}'.format(self.first_name, self.last_name)
 
     class Meta:
+        verbose_name = 'Person'
+        verbose_name_plural = 'Person'
         ordering = ['last_name']
 
