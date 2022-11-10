@@ -16,8 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from app import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include('debug_toolbar.urls')),
-    path('api-auth/', include('rest_framework.urls'))
+    path('api-auth/', include('rest_framework.urls')),
+    path('persons/', views.person_list),
+    path('persons/<int:pk>/', views.person_detail),
+    path('teams/', views.team_list),
+    path('teams/<int:pk>/', views.team_detail),
 ]
