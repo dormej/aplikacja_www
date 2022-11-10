@@ -22,10 +22,10 @@ class TeamSerializer(serializers.Serializer):
 class PersonModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
-        fields = ['id', 'first_name', 'last_name', 'month_of_birth', 'team']
+        fields = ['id', 'first_name', 'last_name', 'month_of_birth', 'team', 'published_date']
         read_only_fields = ['id']
 
-    def validate_name(self, value):
+    def validate_first_name(self, value):
         if not value.isalpha():
             raise serializers.ValidationError(
                 'Name should contains only letters!'
