@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -8,32 +9,35 @@ from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 )
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from app.models import Person, Team
 from app.serializers import PersonModelSerializer, TeamSerializer
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def person_detail(request, pk):
-    try:
-        person = Person.objects.get(pk=pk)
-    except Person.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class PersonDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Person.objects.get(pk=pk)
+        except Person.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
-        person = Person.objects.get(pk=pk)
+    def get(self, request, pk):
+        person = self.get_object(pk)
         serializer = PersonModelSerializer(person)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+    def put(self, request, pk):
+        person = self.get_object(pk)
         serializer = PersonModelSerializer(person, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk):
+        person = self.get_object(pk)
         person.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

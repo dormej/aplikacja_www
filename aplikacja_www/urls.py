@@ -23,7 +23,7 @@ urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('persons/', views.person_list),
-    path('persons/<int:pk>/', views.person_detail),
+    path('persons/<int:pk>/', views.PersonDetail.as_view()),
     path('teams/', views.team_list),
     path('teams/<int:pk>/', views.team_detail),
 ]
