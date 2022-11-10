@@ -1,4 +1,5 @@
 
+from datetime import datetime
 from rest_framework import serializers
 from .models import Person, Team
 
@@ -23,3 +24,18 @@ class PersonModelSerializer(serializers.ModelSerializer):
         model = Person
         fields = ['id', 'first_name', 'last_name', 'month_of_birth', 'team']
         read_only_fields = ['id']
+
+    def validate_name(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError(
+                'Name should contains only letters!'
+            )
+        return value
+
+    def validate_published_date(self, value):
+        if value.month > datetime.now().month:
+            raise serializers.ValidationError(
+                'Month of published date must be today or lesser!'
+            )
+        return value
+
