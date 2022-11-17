@@ -24,6 +24,8 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('persons/', views.person_list),
     path('persons/<int:pk>/', views.person_detail),
+    path('persons/update/<int:pk>/', views.person_update_delete),
+    path('persons/delete/<int:pk>/', views.person_update_delete),
     path('teams/', views.team_list),
     path('teams/<int:pk>/', views.team_detail),
 ]

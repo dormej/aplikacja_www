@@ -1,20 +1,16 @@
-from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
-
-# Create your views here.
-
-from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-)
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 
 from app.models import Person, Team
 from app.serializers import PersonModelSerializer, TeamSerializer
 
+# Create your views here.
 
-@api_view(['GET', 'PUT', 'DELETE'])
+
+@api_view(['GET'])
 def person_detail(request, pk):
     try:
         person = Person.objects.get(pk=pk)
@@ -26,7 +22,17 @@ def person_detail(request, pk):
         serializer = PersonModelSerializer(person)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+
+@api_view(['PUT', 'DELETE'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def person_update_delete(request, pk):
+    try:
+        person = Person.objects.get(pk=pk)
+    except Person.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
         serializer = PersonModelSerializer(person, data=request.data)
         if serializer.is_valid():
             serializer.save()
