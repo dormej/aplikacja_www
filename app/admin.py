@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models.functions import Lower
+from rest_framework.authtoken.admin import TokenAdmin
 
 from app.models import Person, Team
 
@@ -17,11 +18,12 @@ class TeamAdmin(admin.ModelAdmin):
 
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'month_of_birth', 'team', 'published_date']
+    list_display = ['owner', 'first_name', 'last_name', 'month_of_birth', 'team', 'published_date']
     list_filter = ['team', 'published_date']
     fieldsets = [
         ('Personal Information', {'fields': ['first_name', 'last_name', 'month_of_birth']}),
         ('Team', {'fields': ['team']}),
+        ('Owner', {'fields': ['owner']}),
         ('', {'fields': ['published_date']})
     ]
     readonly_fields = ['published_date']
@@ -33,6 +35,8 @@ class PersonAdmin(admin.ModelAdmin):
             return f"{obj.team.name} ({obj.team.country})"
         return "---"
 
+
+TokenAdmin.raw_id_fields = ['user']
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Team, TeamAdmin)

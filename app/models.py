@@ -8,6 +8,11 @@
 import datetime
 
 from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 from datetime import datetime
 
 
@@ -55,6 +60,7 @@ class Person(models.Model):
         'date published',
         auto_now_add=True)
     team = models.ForeignKey(Team, blank=True, null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
@@ -64,3 +70,7 @@ class Person(models.Model):
         verbose_name_plural = 'Person'
         ordering = ['last_name']
 
+
+# for user in User.objects.all():
+#     Token.objects.get_or_create(user=user)
+#

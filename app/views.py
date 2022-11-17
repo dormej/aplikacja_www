@@ -1,19 +1,18 @@
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from app.models import Person, Team
 from app.serializers import PersonModelSerializer, TeamSerializer
-
 # Create your views here.
 
 
 @api_view(['GET'])
 def person_detail(request, pk):
     try:
-        person = Person.objects.get(pk=pk)
+        person = Person.objects.filter(owner=request.user).get(pk=pk)
     except Person.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -23,10 +22,24 @@ def person_detail(request, pk):
         return Response(serializer.data)
 
 
-@api_view(['PUT', 'DELETE'])
+@api_view(['DELETE'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def person_update_delete(request, pk):
+    try:
+        person = Person.objects.get(pk=pk)
+    except Person.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        person.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['PUT'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def person_update(request, pk):
     try:
         person = Person.objects.get(pk=pk)
     except Person.DoesNotExist:
@@ -39,10 +52,6 @@ def person_update_delete(request, pk):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
-        person.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 @api_view(['GET'])
 def person_list(request):
@@ -51,7 +60,7 @@ def person_list(request):
             persons = Person.objects.filter(
                 first_name__contains=request.query_params.get('first_name'))
         else:
-            persons = Person.objects.all()
+            persons = Person.objects.all().filter(owner=request.user)
         return Response(PersonModelSerializer(persons, many=True).data)
 
 
@@ -85,4 +94,15 @@ def team_list(request):
         serializer = TeamSerializer(teams, many=True)
         return Response(serializer.data)
 
+
+@api_view(['GET'])
+def team_participants(request, pk):
+    try:
+        team = Team.objects.get(pk=pk)
+    except Team.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        persons = Person.objects.all().filter(team=pk)
+        return Response(PersonModelSerializer(persons, many=True).data)
 
